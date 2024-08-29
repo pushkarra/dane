@@ -1,0 +1,26 @@
+<!-- /snippets/pagination.liquid -->
+{% assign previous_transl = 'general.pagination.previous' | t %}
+{% assign next_transl = 'general.pagination.next' | t %}
+
+{% if paginate.pages > 1 %}
+<div class="pagination">
+  {% if paginate.previous %}
+    <span class="prev-page"><a href="{{ paginate.previous.url }}">{% include 'icon' with 'arrow' %}</a></span>
+  {% endif %}
+
+  <div>
+  {% for part in paginate.parts %}
+    {% if part.is_link %}
+      <span class="curr-page">{{ part.title | link_to: part.url }}</span>
+    {% else %}
+      {% assign isNumber = part.title | times: 1 %}
+      <span class="current {% if isNumber == 0 %}dots{% endif %}">{{ part.title }}</span>
+    {% endif %}
+  {% endfor %}
+  </div>
+
+  {% if paginate.next %}
+    <span class="next-page"><a href="{{ paginate.next.url }}">{% include 'icon' with 'arrow' %}</a></span>
+  {% endif %}
+</div>
+{% endif %}

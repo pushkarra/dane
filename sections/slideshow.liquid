@@ -1,0 +1,142 @@
+{% assign skip = section.settings.skip %}
+
+<div data-section-id="{{ section.id }}" data-section-type="slideshow-section">
+  {%- if section.blocks.size > 0 -%}
+
+  <div class="slideshow text-center hidden {% if skip > 0 %} skip {% endif %}" id="Slideshow-{{ section.id }}" data-skip="{{ section.settings.skip }}">
+
+    {%- for block in section.blocks -%}
+      {%- assign block_image_desktop = block.settings.image_desktop -%}
+      {%- assign block_image_tablet = block.settings.image_tablet -%}
+      {%- assign block_title_1 = block.settings.title_1 -%}
+      {%- assign block_title_2 = block.settings.title_2 -%}
+      {%- assign block_text = block.settings.text -%}
+      {%- assign block_button_text = block.settings.button_text -%}
+      {%- assign block_link = block.settings.link -%}
+      {%- assign block_color = block.settings.color -%}
+
+      {%- assign img_url = block_image_desktop | img_url: '1x1' | replace: '_1x1.', '_x940.' -%}
+      {%- assign src = block_image_desktop | img_url: 'x940' -%}
+
+      <a href="{{ block_link | append: '?ref=homepage-hero' }}" title="hero slider">
+        {% if block_image_desktop != blank %}
+          <img
+            data-lazy="{{ src }}"
+            data-widths="[810, 1920]"
+            data-aspectratio="1.0"
+            data-sizes="auto"
+            alt="{{ block_image_desktop.alt }}"
+            class="hidden md:inline-block">
+        {% endif %}
+
+        {% if block_image_tablet != blank %}
+          {% assign img_url = block_image_tablet | img_url: '1x1' | replace: '_1x1.', '_768x.' %}
+          <img 
+               data-lazy="{{ block_image_tablet | img_url: '768x' }}"
+               data-widths="[284, 568, 768]"
+               data-aspectratio="1.0"
+               data-sizes="auto"
+               alt="{{ block_image_tablet.alt }}"
+               class="inline-block md:hidden">
+        {% endif %}
+
+        {% if block_title_1 != blank or block_title_2 != blank or block_text != blank %}
+          {% if block_color != blank %}
+            {%- assign color = 'style="color:' | append: block_color | append: '"' -%}
+            {%- assign colorButton = 'style="color:' | append: block_color | append: ';' | append: 'border-color:' | append: block_color | append: ';"' -%}
+          {% endif %}
+
+          <span class="slide-text">
+            <span class="slide-text__min-title" {{ color }}>{{ block_title_1 }}</span>
+            <h1 {{ color }}>{{ block_title_2 }}</h1>
+            <p {{ color }}>{{ block_text }}</p>
+
+            {% if block_button_text != blank %}
+              <span class="btn btn-transparent-white" {{ colorButton }}>{{ block_button_text }}</span>
+            {% endif %}
+          </span>
+        {% endif %}
+      </a>
+
+    {%- endfor -%}
+
+  </div>
+
+  <div class="slideshow-mobile text-center block md:hidden "></div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "number",
+      "id": "skip",
+      "label": "Skip slides",
+      "default": 0,
+      "info": "To skip the first slide, which consists of two slides, you need to enter the value 2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_desktop",
+          "label": "Image (Desktop)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_tablet",
+          "label": "Image (Tablet&Mobile width:768px)"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Title Big"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow",
+      "category": "Image",
+      "blocks": [
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

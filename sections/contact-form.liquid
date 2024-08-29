@@ -1,0 +1,51 @@
+<div class="contact-form-block">
+  <h2 class="h3 mb-10 text-center">{{ section.settings.title }}</h2>
+  <p class="text-center">{{ section.settings.subtitle }}</p>
+  {% form 'contact' %}
+    {% if form.posted_successfully? %}
+    <p class="form-success">
+      {{ 'contact.form.post_success' | t }}
+    </p>
+    {% endif %}
+    {{ form.errors | default_errors }}
+    <div class="flex flex-wrap lg:-mx-4">
+      <div class="w-full lg:w-1/2 mb-4 lg:px-4">
+        <input type="text" class="contactFormText" id="Form-{{ section.id }}-first_name" name="contact[first_name]" placeholder="{{ 'contact.form.first_name' | t }}" autocapitalize="words" value="" />
+      </div>
+      <div class="w-full lg:w-1/2 mb-4 lg:px-4">
+        <input type="text" class="contactFormText" id="Form-{{ section.id }}-last_name" name="contact[last_name]" placeholder="{{ 'contact.form.last_name' | t }}" autocapitalize="words" value="" />
+      </div>
+      <div class="w-full lg:w-1/2 mb-4 lg:px-4">
+        <input type="email" class="contactFormEmail" id="Form-{{ section.id }}-email" name="contact[email]" placeholder="{{ 'contact.form.email' | t }}" autocorrect="off" autocapitalize="off" />
+      </div>
+      <div class="w-full lg:w-1/2 mb-4 lg:px-4">
+        <input type="number" class="contactFormPhone" id="Form-{{ section.id }}-phone" name="contact[phone]" placeholder="{{ 'contact.form.phone' | t }}" autocorrect="off" autocapitalize="off" />
+      </div>
+      <div class="w-full mb-4 lg:px-4">
+        <textarea rows="6" id="Form-{{ section.id }}-message" class="contactFormMessage" name="contact[body]" placeholder="{{ 'contact.form.message' | t }}"></textarea>
+      </div>
+      <div class="w-full mb-4 lg:px-4">
+        <input type="submit" class="btn btn-third" value="{{ 'contact.form.send' | t }}">
+      </div>
+    </div>
+  {% endform %}
+</div>
+
+
+{% schema %}
+{
+  "name": "Form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ]
+}
+{% endschema %}

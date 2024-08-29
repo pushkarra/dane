@@ -1,0 +1,1395 @@
+{%- if section.settings.main_linklist -%}
+  {%- assign main_menu_linklist = section.settings.main_linklist -%}
+  {%- assign main_menu_linklist_top_bar = section.settings.main_linklist_top_bar -%}
+{%- else -%}
+  {%- assign main_menu_linklist = 'main-menu-new' -%}
+  {%- assign main_menu_linklist_top_bar = 'top-bar-menu' -%}
+{%- endif -%}
+
+{% if section.settings.message %}
+<style>
+  {% if section.settings.logo != blank %}
+  .site-header__logo-image {
+    max-width: {{ section.settings.logo_max_width | escape }}px;
+  }
+  {% endif %}
+
+  .site-header__logo-image {
+    margin: 0;
+  }
+</style>
+{% endif %}
+
+<div data-section-id="{{ section.id }}" data-section-type="header-section" data-header-section>
+  {% if section.settings.message %}
+    {% if section.settings.home_page_only == false or request.page_type == 'index' %}
+      <style>
+        .announcement-bar {
+          background-color: {{ section.settings.color_bg }};
+        }
+
+        .announcement-bar,
+        .announcement-bar a,
+        .announcement-bar svg {
+          color: {{ section.settings.color_text }};
+        }
+      </style>
+
+      <div class="announcement-bar">
+        <div class="container">
+          <div class="flex flex-wrap">
+            <div class="w-3/12 hidden lg:block text-left">
+              {% if settings.info_phone != blank %}
+              <a href="tel:{{ settings.info_phone | append: '?ref=header-phone' }}" class="phone">
+                {% include 'icon' with 'phone' %}{{ settings.info_phone }}
+              </a>
+              {% endif %}
+            </div>
+            <div class="w-full lg:w-6/12 text-center">
+              {% if section.settings.message_link != blank %}
+              <a href="{{ section.settings.message_link | append: '?ref=header-announcement-bar-link' }}" class="message">
+                {{ section.settings.message_text }}
+              </a>
+              {% else %}
+              <p class="mb-0">
+                {{ section.settings.message_text }}
+              </p>
+              {% endif %}
+            </div>
+            <div class="w-3/12 hidden lg:block text-right">
+              <nav class="announcement-bar__nav" role="navigation">
+                <ul>
+                  {%- for link in linklists[main_menu_linklist_top_bar].links -%}
+                    {%- assign toplevel = true -%}
+                    {% include 'site-nav' %}
+                  {%- endfor -%}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <header class="site-header" role="banner">
+    <div class="site-header__body">
+      <div class="container">
+        <div class="flex flex-wrap lg:flex-no-wrap justify-between items-center lg:-mx-2">
+
+      {% comment %}
+          <div class="w-full sm:w-3/12 hidden">
+            {% include 'search-drawer' %}
+          </div>
+      {% endcomment %}
+
+
+          <div class="w-1/2 sm:w-2/12 flex items-center lg:px-4">
+            {% unless linklists[section.settings.main_linklist] == blank %}
+            <button type="button" class="site-header__menu js-mobile-nav-toggle mobile-nav--open lg:hidden" aria-controls="MobileNav"  aria-expanded="false" aria-label="{{ 'layout.navigation.menu' | t }}">
+              {% include 'icon' with 'hamburger' %}
+              {% include 'icon' with 'close' %}
+            </button>
+            {% endunless %}
+
+            <div class="site-header__logo">
+              <a href="{{ routes.root_url }}" title="BHFO logo" class="site-header__logo__image">
+                <img src="{{ 'logo-white.svg' | asset_url }}" alt="BHFO - Best Brands, Best Prices" class="hidden">
+              </a>
+            </div>
+          </div>
+          <div class="w-full sm:w-8/12 hidden lg:block">
+            <nav class="site-header__nav" role="navigation">
+              <ul class="site-nav">
+                {%- for link in linklists[main_menu_linklist].links -%}
+                  {%- assign toplevel = true -%}
+                  {% assign n = forloop.index | minus: 1 %}
+                  {% include 'site-nav' %}
+                {%- endfor -%}
+              </ul>
+            </nav>
+
+            <!-- <a href="/pages/quiz" class="btn btn-transparent-white-round hidden lgshop:inline-block">{% include 'icon' with 'question-round' %}<span>Take The Quiz</span></a> -->
+          </div>
+
+          <div class="w-1/2 sm:w-3/12 lg:w-2/12 text-right lg:px-4" style="position:relative;">
+            <!-- <a href="/pages/quiz" class="btn btn-transparent-white-round inline-block lgshop:hidden">{% include 'icon' with 'question-round' %}<span>Take The Quiz</span></a> -->
+            {% comment %}
+              <a href="#SearchDrawer" class="site-header__search-icon inline-block mobile-hidden">
+                <span class="hidden">search</span>
+                {% include 'icon' with 'search-thin' %}
+              </a>
+            {% endcomment %}
+            
+            <div class="mobile-hidden">
+             {% include 'search-drawer' %}
+            </div>
+
+            <a href="#swym-wishlist" class="swym-wishlist">{% include 'icon' with 'heart' %}</a>
+            
+            <a href="/account/?ref=header-features" class="site-header__account lg:inline-block"><span class="hidden">account</span>{% include 'icon' with 'account' %}</a>
+            
+            <div class="site-header__cart">
+              <a href="{{ routes.cart_url | append: '?ref=header-features' }}" class="site-header__icon">
+                {% include 'icon' with 'cart' %}
+                <div id="CartCount" class="site-header__cart-count{% if cart.item_count == 0 %} hidden{% endif %}" data-cart-count-bubble>
+                  <span data-cart-count>{{ cart.item_count }}</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>   
+          <div class="w-full sm:w-3/12 desktop-hidden">
+            {% include 'search-drawer' %}
+          </div>
+      </div>
+    </div>
+
+    {% if section.settings.message_2_text != blank %}
+    <div class="site-header__bottom">
+      <div class="container px-0">
+        <div class="flex flex-wrap">
+          <div class="w-full text-center">
+            <p>
+              {{ section.settings.message_2_text }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+   <!--Mobile Nav-- snippets/mobile-nav.liquid-->
+      {% include 'mobile-nav' %}
+    
+  </header>
+
+</div>
+
+
+{% comment %}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  {% if section.settings.logo %}
+    {% assign image_size = section.settings.logo.width | append:'x' %}
+    "logo": {{ section.settings.logo | img_url: image_size | prepend: "https:" | json }},
+  {% endif %}
+  "sameAs": [
+    {{ settings.social_twitter_link | json }},
+    {{ settings.social_facebook_link | json }},
+    {{ settings.social_pinterest_link | json }},
+    {{ settings.social_instagram_link | json }},
+    {{ settings.social_tumblr_link | json }},
+    {{ settings.social_snapchat_link | json }},
+    {{ settings.social_youtube_link | json }},
+    {{ settings.social_vimeo_link | json }}
+  ],
+  "url": {{ shop.url | append: page.url | json }}
+}
+</script>
+
+{% if request.page_type == 'index' %}
+  {% assign potential_action_target = shop.url | append: routes.search_url | append: "?q={search_term_string}" %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ shop.url | append: page.url | json }}
+    }
+  </script>
+{% endif %}
+
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "message",
+      "label": "Show announcement",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "home_page_only",
+      "label": "Home page only",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "message_text",
+      "label": "Text",
+      "default": "Free shipping for all members!"
+    },
+    {
+      "type": "url",
+      "id": "message_link",
+      "label": "Link",
+      "info": "Optional"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "label": "Bar",
+      "default": "#292727"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "link_list",
+      "id": "main_linklist_top_bar",
+      "label": "Menu (Top Bar)"
+    },
+    {
+      "type": "header",
+      "content": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "main_linklist",
+      "label": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "main_linklist_mobile",
+      "label": "Menu (Mobile)"
+    },
+    {
+      "type": "header",
+      "content": "Announcement bar 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "message_2",
+      "label": "Show announcement",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "message_2_text",
+      "label": "Text",
+      "default": "FLASH SALE! GET 30% OFF CLEARANCE ITEMS. USE PROMO CODE: <span>Clear30</span>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "submenu-1",
+      "name": "Sub Menu for Item 1",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_1",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_2",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_3",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "title_4",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_4",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "title_5",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_5",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "title_6",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_6",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 7"
+        },
+        {
+          "type": "text",
+          "id": "title_7",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_7",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 8"
+        },
+        {
+          "type": "text",
+          "id": "title_8",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_8",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 9"
+        },
+        {
+          "type": "text",
+          "id": "title_9",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_9",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 10"
+        },
+        {
+          "type": "text",
+          "id": "title_10",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_10",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Additional Link"
+        },
+        {
+          "type": "text",
+          "id": "title_additional_link",
+          "label": "Additional Link Title"
+        },
+        {
+          "type": "url",
+          "id": "url_additional_link",
+          "label": "Additional Link"
+        },
+        {
+          "type": "header",
+          "content": "Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "type": "url",
+          "id": "banner_link",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "submenu-2",
+      "name": "Sub Menu for Item 2",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_1",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_2",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_3",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "title_4",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_4",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "title_5",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_5",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "title_6",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_6",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 7"
+        },
+        {
+          "type": "text",
+          "id": "title_7",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_7",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 8"
+        },
+        {
+          "type": "text",
+          "id": "title_8",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_8",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 9"
+        },
+        {
+          "type": "text",
+          "id": "title_9",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_9",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 10"
+        },
+        {
+          "type": "text",
+          "id": "title_10",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_10",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Additional Link"
+        },
+        {
+          "type": "text",
+          "id": "title_additional_link",
+          "label": "Additional Link Title"
+        },
+        {
+          "type": "url",
+          "id": "url_additional_link",
+          "label": "Additional Link"
+        },
+        {
+          "type": "header",
+          "content": "Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "type": "url",
+          "id": "banner_link",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "submenu-3",
+      "name": "Sub Menu for Item 3",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_1",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_2",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_3",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "title_4",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_4",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "title_5",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_5",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "title_6",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_6",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 7"
+        },
+        {
+          "type": "text",
+          "id": "title_7",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_7",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 8"
+        },
+        {
+          "type": "text",
+          "id": "title_8",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_8",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 9"
+        },
+        {
+          "type": "text",
+          "id": "title_9",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_9",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 10"
+        },
+        {
+          "type": "text",
+          "id": "title_10",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_10",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Additional Link"
+        },
+        {
+          "type": "text",
+          "id": "title_additional_link",
+          "label": "Additional Link Title"
+        },
+        {
+          "type": "url",
+          "id": "url_additional_link",
+          "label": "Additional Link"
+        },
+        {
+          "type": "header",
+          "content": "Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "type": "url",
+          "id": "banner_link",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "submenu-4",
+      "name": "Sub Menu for Item 4",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_1",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_2",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_3",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "title_4",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_4",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "title_5",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_5",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "title_6",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_6",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 7"
+        },
+        {
+          "type": "text",
+          "id": "title_7",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_7",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 8"
+        },
+        {
+          "type": "text",
+          "id": "title_8",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_8",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 9"
+        },
+        {
+          "type": "text",
+          "id": "title_9",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_9",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 10"
+        },
+        {
+          "type": "text",
+          "id": "title_10",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_10",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Additional Link"
+        },
+        {
+          "type": "text",
+          "id": "title_additional_link",
+          "label": "Additional Link Title"
+        },
+        {
+          "type": "url",
+          "id": "url_additional_link",
+          "label": "Additional Link"
+        },
+        {
+          "type": "header",
+          "content": "Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "type": "url",
+          "id": "banner_link",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "submenu-5",
+      "name": "Sub Menu for Item 5",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_1",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_2",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_3",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "title_4",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_4",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "title_5",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_5",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "title_6",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_6",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 7"
+        },
+        {
+          "type": "text",
+          "id": "title_7",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_7",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 8"
+        },
+        {
+          "type": "text",
+          "id": "title_8",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_8",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 9"
+        },
+        {
+          "type": "text",
+          "id": "title_9",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_9",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 10"
+        },
+        {
+          "type": "text",
+          "id": "title_10",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_10",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Additional Link"
+        },
+        {
+          "type": "text",
+          "id": "title_additional_link",
+          "label": "Additional Link Title"
+        },
+        {
+          "type": "url",
+          "id": "url_additional_link",
+          "label": "Additional Link"
+        },
+        {
+          "type": "header",
+          "content": "Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "type": "url",
+          "id": "banner_link",
+          "label": "Banner Link"
+        }
+      ]
+    },
+    {
+      "type": "submenu-6",
+      "name": "Sub Menu for Item 6",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "header",
+          "content": "Link 1"
+        },
+        {
+          "type": "text",
+          "id": "title_1",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_1",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 2"
+        },
+        {
+          "type": "text",
+          "id": "title_2",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_2",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 3"
+        },
+        {
+          "type": "text",
+          "id": "title_3",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_3",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 4"
+        },
+        {
+          "type": "text",
+          "id": "title_4",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_4",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 5"
+        },
+        {
+          "type": "text",
+          "id": "title_5",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_5",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 6"
+        },
+        {
+          "type": "text",
+          "id": "title_6",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_6",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 7"
+        },
+        {
+          "type": "text",
+          "id": "title_7",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_7",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 8"
+        },
+        {
+          "type": "text",
+          "id": "title_8",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_8",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 9"
+        },
+        {
+          "type": "text",
+          "id": "title_9",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_9",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Link 10"
+        },
+        {
+          "type": "text",
+          "id": "title_10",
+          "label": "Submenu item"
+        },
+        {
+          "type": "url",
+          "id": "url_10",
+          "label": "Submenu link"
+        },
+        {
+          "type": "header",
+          "content": "Additional Link"
+        },
+        {
+          "type": "text",
+          "id": "title_additional_link",
+          "label": "Additional Link Title"
+        },
+        {
+          "type": "url",
+          "id": "url_additional_link",
+          "label": "Additional Link"
+        },
+        {
+          "type": "header",
+          "content": "Banner"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "type": "url",
+          "id": "banner_link",
+          "label": "Banner Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header",
+      "blocks": [
+        {
+          "type": "submenu-1"
+        },
+        {
+          "type": "submenu-2"
+        },
+        {
+          "type": "submenu-3"
+        },
+        {
+          "type": "submenu-4"
+        },
+        {
+          "type": "submenu-5"
+        },
+        {
+          "type": "submenu-6"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

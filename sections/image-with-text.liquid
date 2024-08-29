@@ -1,0 +1,52 @@
+<div class="image-with-text container pt-8">
+      <div class="flex flex-wrap lg:-mx-4">
+        <div class="w-full lg:w-6/12 px-4 lg:pl-20 lg:mt-8 mb-8">
+          <div class="description-section">
+            <h2>{{ section.settings.text }}</h2>
+            <div>{{ section.settings.description }}</div>
+            <a href="{{ section.settings.button_url }}" class="btn btn-transparent hidden lg:inline-block">{{ section.settings.button_text }}</a>
+          </div>
+        </div>
+        <div class="w-full lg:w-6/12 px-4 mb-8">
+          <img src="{{ section.settings.image | img_url:'500x'}}" style="width:100%;height:auto;">
+        </div>
+      </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Image with Text",
+    "settings": [
+      {
+        "type":"text",
+        "id":"text",
+        "label":"Enter Heading"
+      },
+      {
+        "type": "richtext",
+        "id":"description",
+        "label":"Enter Description"
+      },
+      {
+        "type":"text",
+        "id":"button_text",
+        "label":"Button Name"
+      },
+      {
+        "type":"url",
+        "id":"button_url",
+        "label":"Enter URL"
+      },
+      {
+        "type": "image_picker",
+        "id":"image",
+        "label": "upload an image"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Image with Text"
+      }
+    ]
+  }
+{% endschema %}
